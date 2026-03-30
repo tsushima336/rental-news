@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>賃貸業界ニュース</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f11;
+    --surface: #16181c;
+    --surface2: #1e2126;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.12);
+    --text: #e8eaed;
+    --text2: #9aa0ac;
+    --text3: #5a6070;
+    --accent: #4f8ef7;
+    --accent2: #2ecc8a;
+    --accent3: #f5a623;
+    --accent-law: #7b6cf7;
+    --red: #e05555;
+    --font: 'Noto Sans JP', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; font-size: 14px; line-height: 1.6; }
+  .app { display: grid; grid-template-columns: 220px 1fr; min-height: 100vh; }
+
+  /* Sidebar */
+  .sidebar { background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
+  .sidebar-logo { padding: 20px 20px 16px; border-bottom: 1px solid var(--border); }
+  .logo-mark { display: flex; align-items: center; gap: 8px; }
+  .logo-icon { width: 28px; height: 28px; background: var(--accent); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+  .logo-text { font-size: 13px; font-weight: 700; }
+  .logo-sub { font-size: 10px; color: var(--text3); font-family: var(--mono); margin-top: 2px; }
+  .sidebar-nav { padding: 12px 10px; flex: 1; }
+  .nav-section { margin-bottom: 20px; }
+  .nav-label { font-size: 10px; color: var(--text3); font-family: var(--mono); letter-spacing: 0.1em; padding: 0 10px; margin-bottom: 6px; text-transform: uppercase; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; cursor: pointer; color: var(--text2); font-size: 13px; transition: all 0.15s; margin-bottom: 2px; }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: rgba(79,142,247,0.12); color: var(--accent); }
+  .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: 0.5; flex-shrink: 0; }
+  .nav-item.active .nav-dot { opacity: 1; }
+  .nav-badge { margin-left: auto; background: var(--accent); color: white; font-size: 10px; padding: 1px 6px; border-radius: 10px; font-family: var(--mono); }
+  .nav-badge.green { background: var(--accent2); }
+  .nav-badge.purple { background: var(--accent-law); }
+  .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text3); font-family: var(--mono); }
+  .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent2); margin-right: 6px; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+
+  /* Main */
+  .main { display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 28px; display: flex; align-items: center; gap: 16px; position: sticky; top: 0; z-index: 10; }
+  .topbar-title { font-size: 15px; font-weight: 500; flex: 1; }
+  .topbar-date { font-size: 12px; color: var(--text3); font-family: var(--mono); }
+  .fetch-btn { background: var(--accent); color: white; border: none; padding: 7px 16px; border-radius: 6px; font-family: var(--font); font-size: 12px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all 0.15s; }
+  .fetch-btn:hover { background: #3a7de8; }
+  .fetch-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Stats */
+  .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); border-bottom: 1px solid var(--border); }
+  .stat { background: var(--surface); padding: 16px 24px; }
+  .stat-label { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .stat-val { font-size: 24px; font-weight: 700; font-family: var(--mono); }
+  .stat-val.blue { color: var(--accent); }
+  .stat-val.green { color: var(--accent2); }
+  .stat-val.purple { color: var(--accent-law); }
+
+  /* Content */
+  .content { padding: 24px 28px; flex: 1; }
+  .filter-tabs { display: flex; gap: 6px; margin-bottom: 20px; }
+  .filter-tab { padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer; border: 1px solid var(--border2); color: var(--text2); background: transparent; font-family: var(--font); transition: all 0.15s; }
+  .filter-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-tab.active { background: var(--accent); border-color: var(--accent); color: white; }
+  .filter-tab.active.law { background: var(--accent-law); border-color: var(--accent-law); }
+  .filter-tab.active.news { background: var(--accent2); border-color: var(--accent2); }
+
+  /* Cards */
+  .news-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; cursor: pointer; transition: all 0.2s; animation: fadeIn 0.3s ease forwards; opacity: 0; margin-bottom: 10px; }
+  .news-card:hover { border-color: var(--border2); background: var(--surface2); }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .tag { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 500; font-family: var(--mono); }
+  .tag-law { background: rgba(123,108,247,0.15); color: var(--accent-law); border: 1px solid rgba(123,108,247,0.25); }
+  .tag-news { background: rgba(46,204,138,0.12); color: var(--accent2); border: 1px solid rgba(46,204,138,0.2); }
+  .card-source { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+  .card-time { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-left: auto; }
+  .card-title { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.5; margin-bottom: 8px; }
+  .card-summary { font-size: 13px; color: var(--text2); line-height: 1.7; }
+  .card-footer { margin-top: 12px; display: flex; align-items: center; gap: 12px; }
+
+  /* Empty / skeleton */
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--text3); }
+  .empty-icon { font-size: 36px; margin-bottom: 12px; }
+  .empty-title { font-size: 15px; color: var(--text2); margin-bottom: 6px; }
+  .empty-desc { font-size: 13px; line-height: 1.8; }
+  .skeleton { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; margin-bottom: 10px; }
+  .sk-line { height: 12px; border-radius: 4px; background: linear-gradient(90deg,var(--surface2) 25%,rgba(255,255,255,0.04) 50%,var(--surface2) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; margin-bottom: 10px; }
+  @keyframes shimmer { to{background-position:-200% 0} }
+  .progress-wrap { margin-bottom: 16px; }
+  .progress-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; font-family: var(--mono); }
+  .progress-bar-bg { height: 3px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg,var(--accent),var(--accent2)); border-radius: 2px; transition: width 0.4s ease; width: 0%; }
+  .error-msg { background: rgba(224,85,85,0.08); border: 1px solid rgba(224,85,85,0.2); border-radius: 8px; padding: 12px 16px; font-size: 13px; color: var(--red); margin-bottom: 16px; }
+  .info-msg { background: rgba(79,142,247,0.08); border: 1px solid rgba(79,142,247,0.2); border-radius: 8px; padding: 10px 16px; font-size: 12px; color: var(--accent); margin-bottom: 16px; font-family: var(--mono); }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <div class="logo-icon">🏠</div>
+        <div>
+          <div class="logo-text">RentalWatch</div>
+          <div class="logo-sub">News Dashboard</div>
+        </div>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-label">フィルター</div>
+        <div class="nav-item active" onclick="setFilter('all')">
+          <span class="nav-dot"></span> すべて
+          <span class="nav-badge" id="badge-all">0</span>
+        </div>
+        <div class="nav-item" onclick="setFilter('law')">
+          <span class="nav-dot" style="background:var(--accent-law)"></span> 法律・規制
+          <span class="nav-badge purple" id="badge-law">0</span>
+        </div>
+        <div class="nav-item" onclick="setFilter('news')">
+          <span class="nav-dot" style="background:var(--accent2)"></span> 業界ニュース
+          <span class="nav-badge green" id="badge-news">0</span>
+        </div>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <span class="status-dot"></span>自動更新：1時間毎
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="topbar-title">賃貸業界ニュースダッシュボード</div>
+      <div class="topbar-date" id="today-date"></div>
+      <button class="fetch-btn" id="fetch-btn" onclick="fetchNews()">
+        <span id="btn-label">↻ 最新情報に更新</span>
+      </button>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-label">本日の記事数</div><div class="stat-val blue" id="stat-total">—</div></div>
+      <div class="stat"><div class="stat-label">法律・規制</div><div class="stat-val purple" id="stat-law">—</div></div>
+      <div class="stat"><div class="stat-label">業界ニュース</div><div class="stat-val green" id="stat-news">—</div></div>
+      <div class="stat"><div class="stat-label">最終更新</div><div class="stat-val" id="stat-time" style="font-size:14px;padding-top:4px">—</div></div>
+    </div>
+
+    <div class="content">
+      <div id="error-area"></div>
+      <div class="progress-wrap" id="progress-wrap" style="display:none">
+        <div class="progress-label" id="progress-label">ニュースを取得中...</div>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill"></div></div>
+      </div>
+      <div class="filter-tabs" id="filter-tabs" style="display:none">
+        <button class="filter-tab active" id="tab-all" onclick="setFilter('all')">すべて</button>
+        <button class="filter-tab law" id="tab-law" onclick="setFilter('law')">法律・規制</button>
+        <button class="filter-tab news" id="tab-news" onclick="setFilter('news')">業界ニュース</button>
+      </div>
+      <div id="news-area">
+        <div class="empty-state">
+          <div class="empty-icon">📰</div>
+          <div class="empty-title">ニュースを読み込んでいます...</div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  let allArticles = [];
+  let currentFilter = 'all';
+
+  const d = new Date();
+  document.getElementById('today-date').textContent =
+    `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}`;
+
+  function setProgress(pct, label) {
+    document.getElementById('progress-wrap').style.display = pct > 0 ? 'block' : 'none';
+    document.getElementById('progress-fill').style.width = pct + '%';
+    if (label) document.getElementById('progress-label').textContent = label;
+  }
+
+  function showError(msg) {
+    document.getElementById('error-area').innerHTML = msg
+      ? `<div class="error-msg">${msg}</div>` : '';
+  }
+
+  function setFilter(f) {
+    currentFilter = f;
+    ['all','law','news'].forEach(id => {
+      document.getElementById('tab-'+id)?.classList.toggle('active', id === f);
+    });
+    document.querySelectorAll('.nav-item').forEach((el,i) => {
+      el.classList.toggle('active', (f==='all'&&i===0)||(f==='law'&&i===1)||(f==='news'&&i===2));
+    });
+    renderArticles();
+  }
+
+  function renderArticles() {
+    const filtered = currentFilter === 'all' ? allArticles
+      : allArticles.filter(a => a.category === currentFilter);
+    const area = document.getElementById('news-area');
+    if (!filtered.length) {
+      area.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">該当する記事がありません</div></div>`;
+      return;
+    }
+    area.innerHTML = filtered.map((a, i) => `
+      <div class="news-card" style="animation-delay:${i*50}ms">
+        <div class="card-header">
+          <span class="tag ${a.category==='law'?'tag-law':'tag-news'}">${a.category==='law'?'法律・規制':'業界ニュース'}</span>
+          <span class="card-source">${esc(a.source)}</span>
+          <span class="card-time">${esc(a.date)}</span>
+        </div>
+        <div class="card-title">${esc(a.title)}</div>
+        <div class="card-summary">${esc(a.summary)}</div>
+        <div class="card-footer">
+          ${a.url ? `<a href="${esc(a.url)}" target="_blank" style="font-size:11px;color:var(--accent);font-family:var(--mono)">元記事を開く →</a>` : ''}
+        </div>
+      </div>`).join('');
+  }
+
+  function updateStats() {
+    const law = allArticles.filter(a=>a.category==='law').length;
+    const news = allArticles.filter(a=>a.category==='news').length;
+    document.getElementById('stat-total').textContent = allArticles.length;
+    document.getElementById('stat-law').textContent = law;
+    document.getElementById('stat-news').textContent = news;
+    const now = new Date();
+    document.getElementById('stat-time').textContent =
+      `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+    document.getElementById('badge-all').textContent = allArticles.length;
+    document.getElementById('badge-law').textContent = law;
+    document.getElementById('badge-news').textContent = news;
+  }
+
+  function esc(s) {
+    return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  async function fetchNews() {
+    const btn = document.getElementById('fetch-btn');
+    btn.disabled = true;
+    document.getElementById('btn-label').textContent = '取得中...';
+    showError('');
+    setProgress(20, 'ニュースフィードを取得中...');
+
+    document.getElementById('news-area').innerHTML = `
+      <div>${[1,2,3].map(()=>`
+        <div class="skeleton">
+          <div class="sk-line" style="width:30%;height:10px;margin-bottom:12px"></div>
+          <div class="sk-line" style="width:80%;height:14px;margin-bottom:8px"></div>
+          <div class="sk-line" style="width:100%"></div>
+          <div class="sk-line" style="width:90%"></div>
+        </div>`).join('')}</div>`;
+
+    try {
+      setProgress(60, '記事を整理中...');
+      const res = await fetch('/api/news');
+      if (!res.ok) throw new Error(`サーバーエラー (${res.status})`);
+      const data = await res.json();
+
+      allArticles = data.articles || [];
+      setProgress(100, '完了');
+      setTimeout(() => setProgress(0), 500);
+
+      if (allArticles.length === 0) {
+        document.getElementById('news-area').innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <div class="empty-title">現在ニュースがありません</div>
+            <div class="empty-desc">しばらく時間をおいて再度お試しください</div>
+          </div>`;
+      } else {
+        updateStats();
+        renderArticles();
+        document.getElementById('filter-tabs').style.display = 'flex';
+      }
+    } catch(e) {
+      setProgress(0);
+      showError(`取得に失敗しました: ${e.message}`);
+      document.getElementById('news-area').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">⚠️</div>
+          <div class="empty-title">取得に失敗しました</div>
+          <div class="empty-desc">しばらく待ってから「最新情報に更新」を押してください</div>
+        </div>`;
+    } finally {
+      btn.disabled = false;
+      document.getElementById('btn-label').textContent = '↻ 最新情報に更新';
+    }
+  }
+
+  // Auto-fetch on load
+  fetchNews();
+</script>
+</body>
+</html>
