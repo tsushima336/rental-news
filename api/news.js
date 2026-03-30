@@ -27,6 +27,56 @@ export default async function handler(req, res) {
       url: 'https://news.google.com/rss/search?q=%E8%B3%83%E8%B2%B8%E4%BD%8F%E5%AE%85+%E6%A5%AD%E7%95%8C+%E5%B8%82%E5%A0%B4&hl=ja&gl=JP&ceid=JP:ja',
       source: 'Google News',
       category: 'news'
+    },
+    {
+      url: 'https://news.google.com/rss/search?q=%E8%B3%83%E8%B2%B8%E4%BD%8F%E5%AE%85%E7%AE%A1%E7%90%86%E6%A5%AD%E6%B3%95&hl=ja&gl=JP&ceid=JP:ja',
+      source: 'Google News',
+      category: 'law'
+    },
+    {
+      url: 'https://news.google.com/rss/search?q=%E5%80%9F%E5%9C%B0%E5%80%9F%E5%AE%B6%E6%B3%95+%E6%94%B9%E6%AD%A3&hl=ja&gl=JP&ceid=JP:ja',
+      source: 'Google News',
+      category: 'law'
+    },
+    {
+      url: 'https://news.google.com/rss/search?q=%E3%82%B5%E3%83%BC%E3%83%93%E3%82%B9%E4%BB%98%E3%81%8D%E9%AB%98%E9%BD%A2%E8%80%85%E5%90%91%E3%81%91%E4%BD%8F%E5%AE%85&hl=ja&gl=JP&ceid=JP:ja',
+      source: 'Google News',
+      category: 'news'
+    },
+    {
+      url: 'https://news.google.com/rss/search?q=%E8%B3%83%E8%B2%B8+%E7%A9%BA%E5%AE%A4%E7%8E%87+%E5%AE%B6%E8%B3%83&hl=ja&gl=JP&ceid=JP:ja',
+      source: 'Google News',
+      category: 'news'
+    },
+    {
+      url: 'https://news.google.com/rss/search?q=%E4%B8%8D%E5%8B%95%E7%94%A3+%E8%B3%83%E8%B2%B8+%E3%83%86%E3%82%AF%E3%83%8E%E3%83%AD%E3%82%B8%E3%83%BC&hl=ja&gl=JP&ceid=JP:ja',
+      source: 'Google News',
+      category: 'news'
+    },
+    {
+      url: 'https://news.yahoo.co.jp/rss/topics/realestate.xml',
+      source: 'Yahoo!ニュース',
+      category: 'news'
+    },
+    {
+      url: 'https://news.yahoo.co.jp/rss/topics/business.xml',
+      source: 'Yahoo!ニュース',
+      category: 'news'
+    },
+    {
+      url: 'https://news.google.com/rss/search?q=%E5%8E%9F%E7%8A%B6%E5%9B%9E%E5%BE%A9+%E8%B3%83%E8%B2%B8&hl=ja&gl=JP&ceid=JP:ja',
+      source: 'Google News',
+      category: 'law'
+    },
+    {
+      url: 'https://news.google.com/rss/search?q=%E5%AE%B6%E8%B3%83%E5%82%B5%E5%8B%99%E4%BF%9D%E8%A8%BC+%E8%B3%83%E8%B2%B8&hl=ja&gl=JP&ceid=JP:ja',
+      source: 'Google News',
+      category: 'news'
+    },
+    {
+      url: 'https://news.google.com/rss/search?q=%E5%A4%A7%E6%9D%B1%E5%BB%BA%E8%A8%97+%E3%83%AC%E3%82%AA%E3%83%91%E3%83%AC%E3%82%B9+%E8%B3%83%E8%B2%B8&hl=ja&gl=JP&ceid=JP:ja',
+      source: 'Google News',
+      category: 'news'
     }
   ];
 
