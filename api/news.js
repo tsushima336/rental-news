@@ -63,13 +63,15 @@ export default async function handler(req, res) {
 
         if (!title) continue;
 
-        const date = pubDate ? formatDate(new Date(pubDate)) : formatDate(new Date());
+        const parsedDate = pubDate ? new Date(pubDate) : new Date();
+        const date = formatDate(parsedDate);
         articles.push({
           title: title.slice(0, 80),
           summary: description.slice(0, 120) || 'クリックして詳細をご確認ください。',
           category: feed.category,
           source: feed.source,
           date,
+          rawDate: parsedDate.toISOString(),
           readMin: 1,
           url: link || ''
         });
@@ -87,8 +89,10 @@ export default async function handler(req, res) {
     return true;
   });
 
-  // Sort by date desc, limit 50
-  const sorted = unique.slice(0, 50);
+  // Sort newest first, limit 50
+  const sorted = unique
+    .sort((a, b) => new Date(b.rawDate || 0) - new Date(a.rawDate || 0))
+    .slice(0, 50);
 
   res.status(200).json({ articles: sorted, fetchedAt: new Date().toISOString() });
 }
