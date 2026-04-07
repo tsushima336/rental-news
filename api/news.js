@@ -81,6 +81,21 @@ export default async function handler(req, res) {
     }
   }
 
+  // 賃貸・不動産関連キーワードフィルター
+  const relevantKeywords = [
+    '賃貸', '不動産', '管理会社', '管理業', '借家', '借地', '家賃', '敷金', '礼金',
+    '入居', '退去', '原状回復', '空室', '物件', '住宅', 'マンション', 'アパート',
+    '管理組合', '仲介', '宅建', '国土交通', '住宅セーフティネット', '保証会社',
+    '賃借', 'オーナー', '大家', '建物管理', 'サ高住', '高齢者住宅', '定期借家',
+    'いえらぶ', 'suumo', 'アットホーム', 'レオパレス', '大東建託', '積水ハウス',
+    '住宅新報', '全国賃貸', 'R.E.port', '不動産流通', '賃貸管理'
+  ];
+
+  const isRelevant = (article) => {
+    const text = (article.title + article.summary).toLowerCase();
+    return relevantKeywords.some(kw => text.includes(kw));
+  };
+
   // Deduplicate by title
   const seen = new Set();
   const unique = articles.filter(a => {
@@ -89,10 +104,11 @@ export default async function handler(req, res) {
     return true;
   });
 
-  // Sort newest first, limit 50
+  // 関連記事のみに絞り込み → 最新順 → 上限100件
   const sorted = unique
+    .filter(isRelevant)
     .sort((a, b) => new Date(b.rawDate || 0) - new Date(a.rawDate || 0))
-    .slice(0, 50);
+    .slice(0, 100);
 
   res.status(200).json({ articles: sorted, fetchedAt: new Date().toISOString() });
 }
