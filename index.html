@@ -20,6 +20,8 @@
     --accent2: #2ecc8a;
     --accent3: #f5a623;
     --accent-law: #7b6cf7;
+    --accent-market: #f5a623;
+    --accent-license: #e05582;
     --red: #e05555;
     --font: 'Noto Sans JP', sans-serif;
     --mono: 'DM Mono', monospace;
@@ -45,6 +47,8 @@
   .nav-item.active .nav-dot { opacity: 1; }
   .nav-badge { margin-left: auto; background: var(--accent); color: white; font-size: 10px; padding: 1px 6px; border-radius: 10px; font-family: var(--mono); }
   .nav-badge.green { background: var(--accent2); }
+  .nav-badge.amber { background: var(--accent-market); }
+  .nav-badge.pink { background: var(--accent-license); }
   .nav-badge.purple { background: var(--accent-law); }
   .sidebar-footer { padding: 12px 16px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text3); font-family: var(--mono); }
   .status-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--accent2); margin-right: 6px; animation: pulse 2s infinite; }
@@ -77,6 +81,8 @@
   .filter-tab.active { background: var(--accent); border-color: var(--accent); color: white; }
   .filter-tab.active.law { background: var(--accent-law); border-color: var(--accent-law); }
   .filter-tab.active.news { background: var(--accent2); border-color: var(--accent2); }
+  .filter-tab.active.market { background: var(--accent-market); border-color: var(--accent-market); }
+  .filter-tab.active.license { background: var(--accent-license); border-color: var(--accent-license); }
 
   /* Cards */
   .news-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px 20px; cursor: pointer; transition: all 0.2s; animation: fadeIn 0.3s ease forwards; opacity: 0; margin-bottom: 10px; }
@@ -86,6 +92,8 @@
   .tag { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 500; font-family: var(--mono); }
   .tag-law { background: rgba(123,108,247,0.15); color: var(--accent-law); border: 1px solid rgba(123,108,247,0.25); }
   .tag-news { background: rgba(46,204,138,0.12); color: var(--accent2); border: 1px solid rgba(46,204,138,0.2); }
+  .tag-market { background: rgba(245,166,35,0.12); color: var(--accent-market); border: 1px solid rgba(245,166,35,0.25); }
+  .tag-license { background: rgba(224,85,130,0.12); color: var(--accent-license); border: 1px solid rgba(224,85,130,0.25); }
   .card-source { font-size: 11px; color: var(--text3); font-family: var(--mono); }
   .card-time { font-size: 11px; color: var(--text3); font-family: var(--mono); margin-left: auto; }
   .card-title { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.5; margin-bottom: 8px; }
@@ -151,9 +159,11 @@
       </button>
     </div>
 
-    <div class="stats-bar">
+    <div class="stats-bar" style="grid-template-columns:repeat(5,1fr)">
       <div class="stat"><div class="stat-label">本日の記事数</div><div class="stat-val blue" id="stat-total">—</div></div>
       <div class="stat"><div class="stat-label">法律・規制</div><div class="stat-val purple" id="stat-law">—</div></div>
+      <div class="stat"><div class="stat-label">市場動向</div><div class="stat-val" style="color:var(--accent-market)" id="stat-market">—</div></div>
+      <div class="stat"><div class="stat-label">資格・試験</div><div class="stat-val" style="color:var(--accent-license)" id="stat-license">—</div></div>
       <div class="stat"><div class="stat-label">業界ニュース</div><div class="stat-val green" id="stat-news">—</div></div>
       <div class="stat"><div class="stat-label">最終更新</div><div class="stat-val" id="stat-time" style="font-size:14px;padding-top:4px">—</div></div>
     </div>
@@ -168,6 +178,8 @@
         <button class="filter-tab active" id="tab-all" onclick="setFilter('all')">すべて</button>
         <button class="filter-tab law" id="tab-law" onclick="setFilter('law')">法律・規制</button>
         <button class="filter-tab news" id="tab-news" onclick="setFilter('news')">業界ニュース</button>
+        <button class="filter-tab market" id="tab-market" onclick="setFilter('market')">市場動向</button>
+        <button class="filter-tab license" id="tab-license" onclick="setFilter('license')">資格・試験</button>
       </div>
       <div id="news-area">
         <div class="empty-state">
@@ -200,11 +212,11 @@
 
   function setFilter(f) {
     currentFilter = f;
-    ['all','law','news'].forEach(id => {
+    ['all','law','news','market','license'].forEach(id => {
       document.getElementById('tab-'+id)?.classList.toggle('active', id === f);
     });
     document.querySelectorAll('.nav-item').forEach((el,i) => {
-      el.classList.toggle('active', (f==='all'&&i===0)||(f==='law'&&i===1)||(f==='news'&&i===2));
+      el.classList.toggle('active', (f==='all'&&i===0)||(f==='law'&&i===1)||(f==='news'&&i===2)||(f==='market'&&i===3)||(f==='license'&&i===4));
     });
     renderArticles();
   }
@@ -220,7 +232,7 @@
     area.innerHTML = filtered.map((a, i) => `
       <div class="news-card" style="animation-delay:${i*50}ms">
         <div class="card-header">
-          <span class="tag ${a.category==='law'?'tag-law':'tag-news'}">${a.category==='law'?'法律・規制':'業界ニュース'}</span>
+          <span class="tag tag-${a.category}">${{law:'法律・規制',news:'業界ニュース',market:'市場動向',license:'資格・試験'}[a.category]||'ニュース'}</span>
           <span class="card-source">${esc(a.source)}</span>
           <span class="card-time">${esc(a.date)}</span>
         </div>
@@ -235,15 +247,21 @@
   function updateStats() {
     const law = allArticles.filter(a=>a.category==='law').length;
     const news = allArticles.filter(a=>a.category==='news').length;
+    const market = allArticles.filter(a=>a.category==='market').length;
+    const license = allArticles.filter(a=>a.category==='license').length;
     document.getElementById('stat-total').textContent = allArticles.length;
     document.getElementById('stat-law').textContent = law;
     document.getElementById('stat-news').textContent = news;
+    document.getElementById('stat-market') && (document.getElementById('stat-market').textContent = market);
+    document.getElementById('stat-license') && (document.getElementById('stat-license').textContent = license);
     const now = new Date();
     document.getElementById('stat-time').textContent =
       `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
     document.getElementById('badge-all').textContent = allArticles.length;
     document.getElementById('badge-law').textContent = law;
     document.getElementById('badge-news').textContent = news;
+    document.getElementById('badge-market') && (document.getElementById('badge-market').textContent = market);
+    document.getElementById('badge-license') && (document.getElementById('badge-license').textContent = license);
   }
 
   function esc(s) {
