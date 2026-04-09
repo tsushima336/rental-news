@@ -104,12 +104,14 @@ export default async function handler(req, res) {
         const title = decodeEntities(extract(item, 'title'));
         const link = extract(item, 'link') || extract(item, 'guid');
         const pubDate = extract(item, 'pubDate');
-        const description = decodeEntities(stripTags(extract(item, 'description') || ''));
+        const rawDesc = extract(item, 'description') || '';
+        const description = stripTags(decodeEntities(stripTags(rawDesc)))
+          .replace(/https?:\/\/\S+/g, '').replace(/\s+/g, ' ').trim();
         if (!title) continue;
         const parsedDate = pubDate ? new Date(pubDate) : new Date();
         results.push({
           title: title.slice(0, 80),
-          summary: description.slice(0, 120) || 'クリックして詳細をご確認ください。',
+          summary: description.slice(0, 120) || '',
           category: feed.category,
           source: feed.source,
           date: formatDate(parsedDate),
